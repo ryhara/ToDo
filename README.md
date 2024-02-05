@@ -14,6 +14,8 @@
 - ToDoの詳細情報更新
 - ToDoの削除
 
+https://github.com/ryhara/ToDo/assets/89718149/ea7d0929-ace1-43c0-99d9-eea2c8986f3f
+
 ## 実行方法
 ### backend
 backendディレクトリ直下にて実行
