@@ -16,12 +16,13 @@ export const CreateButton = () => {
         colorScheme="teal"
         ref={finalRef}
         width="30%"
+				my={4}
         onClick={(e) => {
           e.stopPropagation();
           onOpen();
         }}
       >
-        New ToDo <AddIcon ml={3} />
+        New ToDo <AddIcon ml={3} boxSize={4} />
       </Button>
       <FormModal isOpen={isOpen} onClose={onClose} initialRef={initialRef} />
     </>

@@ -1,9 +1,17 @@
 import { Box, Text, VStack } from "@chakra-ui/react";
-import { ToDo, ToDoProps } from "./ToDo";
+import { ToDo, ToDoInfo } from "./ToDo";
+
+export interface ToDoArea {
+  title: string;
+  ToDos: ToDoInfo[];
+}
 
 export interface ToDoAreaProps {
-  title: string;
-  ToDos: ToDoProps[];
+	title: string;
+	ToDos: ToDoInfo[];
+	todoRefetch: () => void;
+	inProgressRefetch: () => void;
+	completeRefetch: () => void;
 }
 
 const selectColor = (title: string) => {
@@ -26,6 +34,9 @@ export const ToDoArea = (props: ToDoAreaProps) => {
             id={todo.id}
             title={todo.title}
             status={todo.status}
+						toDoRefetch={props.todoRefetch}
+						inProgressRefetch={props.inProgressRefetch}
+						completeRefetch={props.completeRefetch}
           />
         ))}
       </VStack>

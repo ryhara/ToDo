@@ -13,49 +13,80 @@ import {
 } from "@chakra-ui/react";
 import { FormModal } from "../organisms/FormModal";
 import React from "react";
+import { gql, useMutation } from "@apollo/client";
 
-export interface ToDoProps {
+export interface ToDoInfo {
   id: string;
   title: string;
   status: number;
+}
+
+export interface ToDoPresenterProps {
+  id: string;
+  title: string;
+  status: number;
+  toDoRefetch: () => void;
+  inProgressRefetch: () => void;
+  completeRefetch: () => void;
 }
 
 const TODO = 0;
 const IN_PROGRESS = 1;
 const COMPLETE = 2;
 
-export const ToDo = (props: ToDoProps) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-	const initialRef = React.useRef(null)
-  const finalRef = React.useRef(null)
+const DELETE_TODO = gql`
+  mutation DeleteTodo($id: ID!) {
+    deleteTodo(id: $id) {
+      id
+    }
+  }
+`;
 
-  const onRemove = () => {
+export const ToDo = (props: ToDoPresenterProps) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const initialRef = React.useRef(null);
+  const finalRef = React.useRef(null);
+  const [deleteTodo] = useMutation(DELETE_TODO);
+
+  const onRemove = (id: string, status: number) => {
     // 削除処理
-		alert("remove");
+    deleteTodo({
+      variables: { id: id },
+    }).then(() => {
+      if (status === TODO) {
+        props.toDoRefetch();
+      }
+      if (status === IN_PROGRESS) {
+        props.inProgressRefetch();
+      }
+      if (status === COMPLETE) {
+        props.completeRefetch();
+      }
+    });
   };
 
   const onNext = () => {
     // 移動処理
-		// statusをインクリメント
-		alert("start");
+    // statusをインクリメント
+    alert("start");
   };
 
-	const onBack = () => {
-		// statusをデクリメント
-		alert("back");
-	}
+  const onBack = () => {
+    // statusをデクリメント
+    alert("back");
+  };
   return (
     <>
       <Box
         display="flex"
         justifyContent="space-between"
         alignItems="center"
-				w="100%"
+        w="100%"
         p={4}
         borderWidth="1px"
         borderRadius="lg"
-				bgColor="white"
-				ref={finalRef}
+        bgColor="white"
+        ref={finalRef}
         onClick={(e) => {
           e.stopPropagation();
           onOpen();
@@ -64,11 +95,11 @@ export const ToDo = (props: ToDoProps) => {
       >
         <Text fontWeight={"bold"}>{props.title}</Text>
         <Box>
-          {(props.status === TODO  || props.status === IN_PROGRESS) ? (
+          {props.status === TODO || props.status === IN_PROGRESS ? (
             <Button
               size="sm"
-							colorScheme="teal"
-							variant="outline"
+              colorScheme="teal"
+              variant="outline"
               mr={2}
               onClick={(e) => {
                 e.stopPropagation();
@@ -78,11 +109,11 @@ export const ToDo = (props: ToDoProps) => {
               {props.status === TODO ? "Start" : "Done"}
             </Button>
           ) : null}
-					{props.status === IN_PROGRESS || props.status === COMPLETE ? (
+          {props.status === IN_PROGRESS || props.status === COMPLETE ? (
             <Button
               size="sm"
-							colorScheme="gray"
-							variant="outline"
+              colorScheme="gray"
+              variant="outline"
               mr={2}
               onClick={(e) => {
                 e.stopPropagation();
@@ -97,14 +128,21 @@ export const ToDo = (props: ToDoProps) => {
             colorScheme="red"
             onClick={(e) => {
               e.stopPropagation();
-              onRemove();
+              confirm("Are you sure you want to delete this ToDo?") &&
+                onRemove(props.id, props.status);
             }}
           >
             削除
           </Button>
         </Box>
       </Box>
-      <FormModal id={props.id} isOpen={isOpen} onClose={onClose} initialRef={initialRef} finalRef={finalRef}/>
+      <FormModal
+        id={props.id}
+        isOpen={isOpen}
+        onClose={onClose}
+        initialRef={initialRef}
+        finalRef={finalRef}
+      />
     </>
   );
 };
