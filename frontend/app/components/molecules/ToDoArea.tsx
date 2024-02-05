@@ -7,11 +7,11 @@ export interface ToDoArea {
 }
 
 export interface ToDoAreaProps {
-	title: string;
-	ToDos: ToDoInfo[];
-	todoRefetch: () => void;
-	inProgressRefetch: () => void;
-	completeRefetch: () => void;
+  title: string;
+  ToDos: ToDoInfo[];
+  todoRefetch: () => void;
+  inProgressRefetch: () => void;
+  completeRefetch: () => void;
 }
 
 const selectColor = (title: string) => {
@@ -28,17 +28,20 @@ export const ToDoArea = (props: ToDoAreaProps) => {
         <Text fontSize={"2xl"} fontWeight={"bold"}>
           {props.title}
         </Text>
-        {props.ToDos && props.ToDos.map((todo) => (
-          <ToDo
-            key={todo.id}
-            id={todo.id}
-            title={todo.title}
-            status={todo.status}
-						toDoRefetch={props.todoRefetch}
-						inProgressRefetch={props.inProgressRefetch}
-						completeRefetch={props.completeRefetch}
-          />
-        ))}
+        <VStack spacing={2} w="100%" maxH="35vh" overflowY="auto">
+          {props.ToDos &&
+            props.ToDos.map((todo) => (
+              <ToDo
+                key={todo.id}
+                id={todo.id}
+                title={todo.title}
+                status={todo.status}
+                toDoRefetch={props.todoRefetch}
+                inProgressRefetch={props.inProgressRefetch}
+                completeRefetch={props.completeRefetch}
+              />
+            ))}
+        </VStack>
       </VStack>
     </Box>
   );

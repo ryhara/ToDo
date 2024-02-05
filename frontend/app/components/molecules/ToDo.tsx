@@ -42,11 +42,20 @@ const DELETE_TODO = gql`
   }
 `;
 
+const UPDATE_STATUS = gql`
+  mutation UpdateStatus($id: ID!, $title: String!, $status: Int!) {
+    updateTodo(id: $id, title: $title, status: $status) {
+      id
+    }
+  }
+`;
+
 export const ToDo = (props: ToDoPresenterProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
   const [deleteTodo] = useMutation(DELETE_TODO);
+  const [updateTodo] = useMutation(UPDATE_STATUS);
   const OnCloseWithRefetch = () => {
     onClose();
     if (props.status === TODO) {
@@ -80,12 +89,34 @@ export const ToDo = (props: ToDoPresenterProps) => {
   const onNext = () => {
     // 移動処理
     // statusをインクリメント
-    alert("start");
+    updateTodo({
+      variables: { id: props.id, title: props.title, status: props.status + 1 },
+    }).then(() => {
+      if (props.status === TODO) {
+        props.toDoRefetch();
+        props.inProgressRefetch();
+      }
+      if (props.status === IN_PROGRESS) {
+        props.inProgressRefetch();
+        props.completeRefetch();
+      }
+    });
   };
 
   const onBack = () => {
     // statusをデクリメント
-    alert("back");
+    updateTodo({
+      variables: { id: props.id, title: props.title, status: props.status - 1 },
+    }).then(() => {
+      if (props.status === IN_PROGRESS) {
+        props.toDoRefetch();
+        props.inProgressRefetch();
+      }
+      if (props.status === COMPLETE) {
+        props.inProgressRefetch();
+        props.completeRefetch();
+      }
+    });
   };
   return (
     <>
