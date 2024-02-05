@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
 
 export const TODO = 0;
 export const IN_PROGRESS = 1;
@@ -21,8 +21,7 @@ export class Todo {
   @Field({ nullable: true })
   description: string;
 
-  // GraphQLに存在しない型(TodoStatus)を指定する場合は、ReturnTypeFuncを引数に与える
-  @Field()
+  @Field((type) => Int)
   status: number;
 
   @Field()
@@ -30,4 +29,16 @@ export class Todo {
 
   @Field()
   updatedAt: Date;
+}
+
+@ObjectType()
+export class TodoInfo {
+  @Field((type) => ID)
+  id: string;
+
+  @Field()
+  title: string;
+
+  @Field((type) => Int)
+  status: number;
 }

@@ -14,15 +14,22 @@ type Mutation {
 }
 
 type Query {
-  findAll: [Todo]!
-  findOneById(id: ID!): Todo!
+  findAll: [TodoInfo]!
+  findOneById(id: ID!): Todo
+  findTodoByStatus(status: Int!): [TodoInfo]!
 }
 
 type Todo {
   createdAt: DateTime!
   description: String
   id: ID!
-  status: Float!
+  status: Int!
   title: String!
   updatedAt: DateTime!
+}
+
+type TodoInfo {
+  id: ID!
+  status: Int!
+  title: String!
 }

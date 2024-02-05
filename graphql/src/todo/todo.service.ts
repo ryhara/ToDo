@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Todo } from './models/todo.models';
+import { Todo, TodoInfo } from './models/todo.models';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -8,13 +8,13 @@ export class TodoService {
   constructor(private prisma: PrismaService) {}
 
   // 全件取得のメソッド
-  async findAll(): Promise<Todo[]> {
+  async findAll(): Promise<TodoInfo[]> {
     const result  = this.prisma.todo.findMany();
     return result;
   }
 
   // idを元に一件取得のメソッド
-  async findOneById(id: string): Promise<Todo> {
+  async findOneById(id: string): Promise<TodoInfo> {
     const result = await this.prisma.todo.findUnique({
       where: {
         id: id,
@@ -25,6 +25,19 @@ export class TodoService {
       // https://docs.nestjs.com/exception-filters#built-in-http-exceptions
       throw new NotFoundException();
     }
+    return result;
+  }
+
+  // statusを元にTodoを取得
+  async findTodoByStatus(status: number): Promise<TodoInfo[]> {
+    if (status < 0 || status > 2) {
+      return [];
+    }
+    const result = await this.prisma.todo.findMany({
+      where: {
+        status: status,
+      },
+    });
     return result;
   }
 
