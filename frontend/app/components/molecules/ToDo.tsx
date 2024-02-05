@@ -11,7 +11,7 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { FormModal } from "../organisms/FormModal";
+import { FormModal } from "../organisms/FormModal/FormModal";
 import React from "react";
 import { gql, useMutation } from "@apollo/client";
 
@@ -47,6 +47,18 @@ export const ToDo = (props: ToDoPresenterProps) => {
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
   const [deleteTodo] = useMutation(DELETE_TODO);
+  const OnCloseWithRefetch = () => {
+    onClose();
+    if (props.status === TODO) {
+      props.toDoRefetch();
+    }
+    if (props.status === IN_PROGRESS) {
+      props.inProgressRefetch();
+    }
+    if (props.status === COMPLETE) {
+      props.completeRefetch();
+    }
+  };
 
   const onRemove = (id: string, status: number) => {
     // 削除処理
@@ -139,7 +151,7 @@ export const ToDo = (props: ToDoPresenterProps) => {
       <FormModal
         id={props.id}
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={OnCloseWithRefetch}
         initialRef={initialRef}
         finalRef={finalRef}
       />

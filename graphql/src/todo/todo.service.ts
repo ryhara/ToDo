@@ -9,7 +9,7 @@ export class TodoService {
 
   // 全件取得のメソッド
   async findAll(): Promise<TodoInfo[]> {
-    const result  = this.prisma.todo.findMany();
+    const result = this.prisma.todo.findMany();
     return result;
   }
 
@@ -44,22 +44,24 @@ export class TodoService {
   // Todoの追加
   async addTodo(
     title: string,
-    description: string,
+    description: string | null,
+    status: number,
   ): Promise<Todo> {
     const result = await this.prisma.todo.create({
       data: {
         title: title,
         description: description,
-        status: 0,
+        status: status,
       },
     });
+    if (!result) {
+      throw new NotFoundException();
+    }
     return result;
   }
 
   // Todoの削除
-  async deleteTodo(
-    id: string,
-  ): Promise<Todo> {
+  async deleteTodo(id: string): Promise<Todo> {
     const result = await this.prisma.todo.delete({
       where: {
         id: id,
@@ -72,50 +74,27 @@ export class TodoService {
   async updateTodo(
     id: string,
     title: string,
-    description: string,
+    description: string | null,
     status: number,
   ): Promise<Todo> {
-    const result = await this.prisma.todo.update({
-      where: {
-        id: id,
-      },
-      data: {
-        title: title,
-        description: description,
-        status: status,
-      },
-    });
-    return result;
+    try {
+      console.log('update', id, title, description, status);
+      const result = await this.prisma.todo.update({
+        where: {
+          id: id,
+        },
+        data: {
+          title: title,
+          description: description,
+          status: status,
+        },
+      });
+      if (!result) {
+        throw new NotFoundException();
+      }
+      return result;
+    } catch (e) {
+      console.error(e);
+    }
   }
 }
-
-// @Injectable()
-// export class TodoService {
-//   // 今回はDBと接続しないのでメモリ上にTodoを保存します。
-//   // TODO : DBと接続するように修正
-//   private todos: Todo[] = [
-//     {
-//       id: '1',
-//       title: 'title1',
-//       description: 'description1',
-//       status: TodoStatus.TODO,
-//       createdAt: new Date(),
-//       updatedAt: new Date(),
-//     },
-//   ];
-
-//   // 全件取得のメソッド
-//   findAll(): Todo[] {
-//     return this.todos;
-//   }
-//   // idを元に一件取得のメソッド
-//   findOneById(id: string): Todo {
-//     const result = this.todos.find((todo) => id === todo.id);
-//     if (!result) {
-//       // なかったら404エラーを返す。ビルトインのエラーも豊富にあってエラー処理も結構楽
-//       // https://docs.nestjs.com/exception-filters#built-in-http-exceptions
-//       throw new NotFoundException();
-//     }
-//     return result;
-//   }
-// }

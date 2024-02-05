@@ -1,4 +1,3 @@
-import { gql, useQuery } from "@apollo/client";
 import {
   Box,
   Button,
@@ -19,69 +18,32 @@ import {
   Textarea,
   VStack,
 } from "@chakra-ui/react";
-import React from "react";
 
-export interface FormModalProps {
+interface FormModalPresenterProps {
   id?: string;
   isOpen: boolean;
-  onClose: () => void;
   initialRef?: React.MutableRefObject<null>;
   finalRef?: React.MutableRefObject<null>;
-}
-
-export interface ToDoDetail {
-  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  onClose: () => void;
+  onCreate: (title: string, status: number, description: string) => void;
+  onUpdate: (
+    id: string,
+    title: string,
+    status: number,
+    description: string
+  ) => void;
+  formattedDate: (time: Date) => string;
   title: string;
   status: number;
   description: string;
-  createdAt: Date;
-  updatedAt: Date;
+  setTitle: (title: string) => void;
+  setStatus: (status: number) => void;
+  setDescription: (description: string) => void;
 }
 
-const GET_TODO = gql`
-  query GetTodo($id: ID!) {
-    findOneById(id: $id) {
-      id
-      title
-      status
-      description
-      createdAt
-      updatedAt
-    }
-  }
-`;
-
-function formattedDate(time : Date) {
-	const date = new Date(time);
-	const formattedDate = date.toLocaleString("ja-JP", {
-		year: "numeric",
-		month: "2-digit",
-		day: "2-digit",
-		hour: "2-digit",
-		minute: "2-digit",
-		timeZone: "Asia/Tokyo",
-	});
-return formattedDate;
-}
-
-export const FormModal = (props: FormModalProps) => {
-  let todo;
-  if (props.id !== undefined) {
-    // ToDoの詳細情報を取得
-    const { data, loading, error } = useQuery(GET_TODO, {
-      variables: { id: props.id },
-    });
-    todo = data?.findOneById as ToDoDetail;
-  }
-
-  const onCreate = () => {
-    alert("create");
-  };
-
-  const onUpdate = () => {
-    alert("update");
-  };
-
+export const FormModalPresenter = (props: FormModalPresenterProps) => {
   return (
     <>
       <Modal
@@ -93,7 +55,9 @@ export const FormModal = (props: FormModalProps) => {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{props.id === undefined ? "Create" : "Edit"}</ModalHeader>
+          <ModalHeader>
+            {props.id === undefined ? "Create" : "Edit"}
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl my={2}>
@@ -101,48 +65,45 @@ export const FormModal = (props: FormModalProps) => {
               <Input
                 ref={props.initialRef}
                 placeholder="Title"
-                value={todo?.title}
+                value={props.title}
+                onChange={(e) => props.setTitle(e.target.value)}
               />
             </FormControl>
             <FormControl my={2}>
               <FormLabel>Status</FormLabel>
-              <Select placeholder="Select status">
-                <option
-                  value="0"
-                  selected={props.id === undefined || todo?.status === 0}
-                >
+              <Select
+                placeholder="Select status"
+                onChange={(e) => props.setStatus(parseInt(e.target.value))}
+              >
+                <option value="0" selected={props.status === 0}>
                   ToDo
                 </option>
-                <option value="1" selected={todo?.status === 1}>
+                <option value="1" selected={props.status === 1}>
                   In Progress
                 </option>
-                <option value="2" selected={todo?.status === 2}>
+                <option value="2" selected={props.status === 2}>
                   Complete
                 </option>
               </Select>
             </FormControl>
             <FormControl my={2}>
               <FormLabel>Description</FormLabel>
-              <Textarea placeholder="ToDo description ...">
-                {todo?.description}
-              </Textarea>
+              <Textarea
+                placeholder="ToDo description ..."
+                value={props.description}
+                onChange={(e) => props.setDescription(e.target.value)}
+              />
             </FormControl>
           </ModalBody>
           <ModalFooter>
             <Flex justifyContent="space-between" w={"100%"}>
               <VStack spacing={2} align={"start"}>
                 <Text fontSize="sm">
-                  Create At:{" "}
-                  {todo !== undefined
-                    ? formattedDate(todo.createdAt)
-                    : "N/A"}
+                  Create At: {props.formattedDate(props.createdAt)}
                 </Text>
 
                 <Text fontSize="sm">
-                  Update At:{" "}
-                  {todo !== undefined
-                    ? formattedDate(todo.updatedAt)
-                    : "N/A"}
+                  Update At: {props.formattedDate(props.updatedAt)}
                 </Text>
               </VStack>
               <HStack spacing={1}>
@@ -151,7 +112,18 @@ export const FormModal = (props: FormModalProps) => {
                   mr={3}
                   onClick={(e) => {
                     e.stopPropagation();
-                    props.id === undefined ? onCreate() : onUpdate();
+                    props.id === undefined
+                      ? props.onCreate(
+                          props.title,
+                          props.status,
+                          props.description
+                        )
+                      : props.onUpdate(
+                          props.id,
+                          props.title,
+                          props.status,
+                          props.description
+                        );
                   }}
                 >
                   {props.id === undefined ? "Create" : "Update"}

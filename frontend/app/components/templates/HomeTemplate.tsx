@@ -4,6 +4,7 @@ import { Container, Text, VStack } from "@chakra-ui/react";
 import { ToDoList } from "../organisms/ToDoList";
 import { gql, useQuery } from "@apollo/client";
 import { ToDoInfo } from "../molecules/ToDo";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 const GET_TODO = gql`
   query GetToDos($status: Int!) {
@@ -15,7 +16,10 @@ const GET_TODO = gql`
   }
 `;
 
-export const HomeTemplate = () => {
+interface HomeTemplateProps {
+}
+
+export const HomeTemplate = (props : HomeTemplateProps) => {
   const {
     data: todoData,
     loading: todoLoading,
@@ -59,7 +63,7 @@ export const HomeTemplate = () => {
           <Text fontSize="6xl" fontWeight="bold">
             ToDo App
           </Text>
-          <CreateButton />
+          <CreateButton toDoRefetch={todoRefetch} inProgressRefetch={inProgressRefetch} completeRefetch={completeRefetch} />
           <ToDoList ToDosList={Lists} toDoRefetch={todoRefetch} inProgressRefetch={inProgressRefetch} completeRefetch={completeRefetch} />
         </VStack>
       </Container>
