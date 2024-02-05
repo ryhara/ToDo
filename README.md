@@ -1,7 +1,7 @@
 # ToDo
 **TypeScript / Next.js / NestJS / GraphQL / PostgreSQL / Docker / Chakra UI**を使用して作成したToDoアプリケーションです。
 
-アプリケーションの新規性や機能性が目的ではなく、これらの技術を使用することが目的となっています。
+アプリケーションの新規性や機能性が目的ではなく、これらの技術を使用すること、練習することが目的となっています。
 
  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg"  width="50" height="50"  /> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" width="50" height="50" /> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/graphql/graphql-plain.svg"  width="50" height="50" />  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nestjs/nestjs-plain.svg"  width="50" height="50"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg"  width="50" height="50"  /> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-plain-wordmark.svg"  width="50" height="50" />
 
