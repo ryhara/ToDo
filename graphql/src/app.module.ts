@@ -5,6 +5,8 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TodoModule } from './todo/todo.module';
+import { PrismaService } from './prisma/prisma.service';
+import { TodoResolver } from './todo/todo.resolver';
 
 @Module({
   imports: [

@@ -7,6 +7,12 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Mutation {
+  addTodo(description: String, title: String!): Todo!
+  deleteTodo(id: ID!): Todo!
+  updateTodo(description: String, id: ID!, status: Float, title: String!): Todo!
+}
+
 type Query {
   findAll: [Todo]!
   findOneById(id: ID!): Todo!
@@ -16,13 +22,7 @@ type Todo {
   createdAt: DateTime!
   description: String
   id: ID!
-  status: TodoStatus!
+  status: Float!
   title: String!
   updatedAt: DateTime!
-}
-
-enum TodoStatus {
-  COMPLETE
-  IN_PROGRESS
-  TODO
 }

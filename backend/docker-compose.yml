@@ -3,7 +3,7 @@ version: "3"
 services:
   db:
     image: postgres:latest
-    container_name: postgres
+    container_name: backend
     ports:
       - "5432:5432"
     volumes:
@@ -11,6 +11,5 @@ services:
     restart: always
     env_file:
       - ./.env
-
-  volumes:
-    postgres:
+volumes:
+  postgres:
