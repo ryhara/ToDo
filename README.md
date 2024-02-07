@@ -7,7 +7,7 @@
 
 ## 構成
 
-![image](https://github.com/ryhara/ToDo/assets/89718149/f46ff8f4-6e39-4a77-a489-6ee1d6c8b2e9)
+![image](https://github.com/ryhara/ToDo/assets/89718149/47398530-c40b-4211-8e17-55f8c73e7eaa)
 
 ## 機能
 - ToDoの追加
